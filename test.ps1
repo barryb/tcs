@@ -8,5 +8,5 @@ $scriptDir = Split-Path $scriptPath
 Import-Module $scriptDir\TopClassTools
 
 
-Setup-TC-IIS
-#Setup-TC-PHP
+Setup-TCiis
+#Setup-TCphp
