@@ -3,7 +3,7 @@
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptDir = Split-Path $scriptPath
 
-[xml] $config = Get-Content $scriptDir\config.xml
+[xml] $cf = Get-Content $scriptDir\config.xml
 
 Import-Module $scriptDir\TopClassTools
 

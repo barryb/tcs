@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-        <sql_sa_username>sa</sql_sa_username>
-        <sql_sa_password>change_me</sql_sa_password>
 
-        <phpInstallerName>php-installer.msi</phpInstallerName>
-        <phpArgs>/q ADDLOCAL=iis4FastCGI /log $setup_dir\php-install.log</phpArgs>
+        <sql_sa_username value = "sa" />
+        <sql_sa_password value = "change_me" />
+
+        <setup_dir value="C:\wbt_setup" />
+
+        <phpInstallerName value="php-installer.msi"/>
 </config>
