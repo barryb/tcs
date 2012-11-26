@@ -13,7 +13,7 @@ function Install-TCiis {
 }
 
 
-function Install-TCphp
+function Install-TCphp {
     param (
 
         [string] $setup_dir = $config.setup_dir,
