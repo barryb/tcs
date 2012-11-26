@@ -3,7 +3,9 @@
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptDir = Split-Path $scriptPath
 
-[xml] $cf = Get-Content $scriptDir\config.xml
+$cf = [xml](Get-Content "$scriptDir\config.xml")
+
+write-host $cf.config.phpInstallerName
 
 Import-Module $scriptDir\TopClassTools
 
