@@ -1,4 +1,4 @@
-ImportModule   ServerManager
+Import-Module   ServerManager
 
 function Setup-TC-IIS {
 
