@@ -18,7 +18,7 @@ function Install-TCphp {
     param (
 
         [string] $setup_dir = $config.setup_dir,
-        [string] $installer = "setup_dir/$config.php.installer"
+        [string] $installer = "$setup_dir/$config.php.installer"
         )
 
     [string] $args = "/q ADDLOCAL=iis4FastCGI /log $setup_dir\php-install.log"
