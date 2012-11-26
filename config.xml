@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+        <sql_sa_username>sa</sql_sa_username>
+        <sql_sa_password>change_me</sql_sa_password>
+
+        <phpInstallerName>php-installer.msi</phpInstallerName>
+        <phpArgs>/q ADDLOCAL=iis4FastCGI /log $setup_dir\php-install.log</phpArgs>
+</config>
