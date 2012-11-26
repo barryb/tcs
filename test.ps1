@@ -3,7 +3,7 @@
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptDir = Split-Path $scriptPath
 
-$cf = [xml](Get-Content "$scriptDir\config.xml")
+$cf = [xml](Get-Content "c:\wbt_setup\tcs\config.xml")
 
 write-host $cf.config.phpInstallerName
 
