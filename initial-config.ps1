@@ -1,5 +1,7 @@
 # This PowerShell Script will enable CLR on the local SQL Server, disabling lightweight pooling
 
+[xml] $config = Get-Content .\config.xml
+
 
 # By default we use Windows integrated auth for SQL server, but creds can be supplied here if required
 $sql_use_windows_auth = $true
