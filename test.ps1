@@ -1,9 +1,12 @@
 # This PowerShell Script will enable CLR on the local SQL Server, disabling lightweight pooling
 
-[xml] $config = Get-Content .\config.xml
+$scriptPath = $MyInvocation.MyCommand.Path
+$scriptDir = Split-Path $scriptPath
 
-Import-Module .\TopClassTools
+[xml] $config = Get-Content $scriptDir\config.xml
+
+Import-Module $scriptDir\TopClassTools
 
 
 Setup-TC-IIS
-Setup-TC-PHP
+#Setup-TC-PHP
