@@ -9,4 +9,4 @@ Import-Module $scriptDir\TopClassTools
 
 
 Install-TCiis
-#Install-TCphp
+Install-TCphp
