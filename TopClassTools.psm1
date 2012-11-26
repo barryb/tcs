@@ -1,6 +1,6 @@
 Import-Module   ServerManager
 
-function Setup-TCiis {
+function Install-TCiis {
 
     Add-WindowsFeature -Name Web-Static-Content, `
     Web-Default-Doc, Web-Http-Errors, `
@@ -13,8 +13,7 @@ function Setup-TCiis {
 }
 
 
-function Setup-TCphp {
-
+function Install-TCphp
     param (
 
         [string] $setup_dir = $config.setup_dir,
