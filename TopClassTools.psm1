@@ -23,9 +23,13 @@ function Install-TCphp {
 
     [string] $args = "/q ADDLOCAL=iis4FastCGI /log $setup_dir\php-install.log"
 
-     Start-Process `
-        -file $installer `
-        -arg $args `
-        -passthru | Wait-Process
+    Write-host  $setup_dir
+    Write-host $installer
+    Write-host $args
+
+     #Start-Process `
+     #   -file $installer `
+     #   -arg $args `
+     #   -passthru | Wait-Process
 
 }
