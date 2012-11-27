@@ -20,6 +20,8 @@ $sql_admin_password = $cf.config.sql_admin_password.value
 
 Import-Module $scriptDir\TopClassTools
 
+Write-host "TC: $tc_installer_zip"
+
 if ( $sql_user_windows_auth -eq $true ) {
 
     write-host "Using Windows AUTH"
