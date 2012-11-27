@@ -11,5 +11,5 @@
         <phpInstallerName value ="php-installer.msi"/>
         <tc_installer_zip value = "tc9-installer.zip" />
 
-        <ask_permission value = $false />
+        <ask_permission value = "$false" />
 </config>
