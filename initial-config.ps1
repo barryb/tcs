@@ -13,6 +13,8 @@ $sql_admin_password = $cf.config.sql_admin_password.value
 $sql_server_name = $cf.config.sql_server_name.value
 $tc_installer_zip = $cf.config.tc_installer_zip.value
 $sql_admin_password = $cf.config.sql_admin_password.value
+$tc_user = $cf.config.tc_user.value
+$tc_pass = $cf.config.tc_pass.value
 $ask_permission = [Boolean]::Parse($cf.config.ask_permission.value)
 $sql_use_windows_auth = [Boolean]::Parse($cf.config.sql_use_windows_auth.value)
 

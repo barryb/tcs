@@ -12,4 +12,7 @@
         <tc_installer_zip value = "tc9-distribution.zip" />
 
         <ask_permission value = "false" />
+
+        <tc_user value = "tcuser" />
+        <tc_pass value = "Jjasj6435kk" />
 </config>

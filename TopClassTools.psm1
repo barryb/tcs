@@ -75,6 +75,8 @@ function Enable-TCclr {
     # be fixed to either work with Windows authentication or any specified login
 
     if ( $enable_mixed_mode -eq $true ) {
+
+        Write-Host "Enabling Mixed Auth Mode"
         $iName = get-itemproperty 'HKLM:\Software\microsoft\Microsoft SQL Server\Instance Names\SQL' `
         -name $instance_name
 
@@ -88,6 +90,8 @@ function Enable-TCclr {
     }
 
     if ( $enable_sa_account -eq $true ) {
+
+        Write-Host "Enabling SA account"
         
         $command = "alter login [sa] enable; go"
         $result = Invoke-Expression "$sql_cmd `"$command`""
@@ -95,6 +99,8 @@ function Enable-TCclr {
     }
 
     if ( $reset_sa_password -eq $true ) {
+
+        Write-Host "Resetting SA password"
         
         $command = "alter login [sa] with password = '$admin_password'; go"
         $result = Invoke-Expression "$sql_cmd `"$command`""
@@ -150,7 +156,7 @@ function Enable-TCclr {
     }
 
     if ( $need_restart -eq $true ) {
-    
+
         $action_notes += "SQL Server service will be restarted"
         $svc = get-service $instance_name
         $svc_name = $svc.name
