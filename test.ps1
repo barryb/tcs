@@ -15,6 +15,9 @@ $tc_installer_zip = $cf.config.tc_installer_zip.value
 
 $sql_admin_password = $cf.config.sql_admin_password.value
 
+$sql_auth = $cf.config.sql_use_windows_auth.value
+Write-Host "sql_auth: $sql_auth"
+
 [Boolean] $ask_permission = [System.Convert]::ToBoolean($cf.config.ask_permission.value)
 [Boolean] $sql_use_windows_auth = [System.Convert]::ToBoolean($cf.config.sql_use_windows_auth.value)
 
