@@ -24,7 +24,7 @@ function Install-TCphp {
 
 
      Start-Process `
-        -file "$setup_dir\phpInstallerName" `
+        -file "$setup_dir\$phpInstallerName" `
         -arg $args `
         -passthru | Wait-Process
 
