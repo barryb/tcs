@@ -19,7 +19,7 @@ $sql_auth = $cf.config.sql_use_windows_auth.value
 Write-Host "sql_auth: $sql_auth"
 
 [Boolean] $ask_permission = [System.Convert]::ToBoolean($cf.config.ask_permission.value)
-[Boolean] $sql_use_windows_auth = [System.Convert]::ToBoolean($cf.config.sql_use_windows_auth.value)
+[Boolean] $sql_use_windows_auth = [System.Convert]::ToBoolean($sql_auth)
 
 Import-Module $scriptDir\TopClassTools
 
