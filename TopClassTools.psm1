@@ -45,6 +45,8 @@ function Enable-TCclr {
 
         )
 
+    $need_restart = $false
+
     if ( $use_windows_auth -eq $true ) {
         $sql_creds = ""
     } else {
@@ -80,19 +82,21 @@ function Enable-TCclr {
             $i = $iName.MSSQLSERVER
             set-itemproperty "HKLM:\Software\microsoft\Microsoft SQL Server\$i\MSSQLServer" `
                 -name LoginMode -value 2 -type dword
+
+            $need_restart = $true
         }
     }
 
     if ( $enable_sa_account -eq $true ) {
         
-        $command = "alter login [sa] enable"
+        $command = "alter login [sa] enable; go"
         $result = Invoke-Expression "$sql_cmd `"$command`""
 
     }
 
     if ( $reset_sa_password -eq $true ) {
         
-        $command = "alter login [sa] with password = '$admin_password'"
+        $command = "alter login [sa] with password = '$admin_password'; go"
         $result = Invoke-Expression "$sql_cmd `"$command`""
 
     }
@@ -132,6 +136,8 @@ function Enable-TCclr {
 
             # The following command is a dummy command to force a new connection after the above restart    
             $action_commands += "$sql_cmd `"select newid()`" -ErrorAction SilentlyContinue"
+
+            $need_restart = $false
             
        }
        
@@ -141,6 +147,19 @@ function Enable-TCclr {
        
     } else {
         Write-Host "CLR was already enabled"
+    }
+
+    if ( $need_restart -eq $true ) {
+    
+        $action_notes += "SQL Server service will be restarted"
+        $svc = get-service $instance_name
+        $svc_name = $svc.name
+        $action_commands += "Restart-Service $svc_name -Force"
+        $action_commands += "`$svc.WaitForStatus('Running', (new-timespan -seconds 30))"  
+
+        # The following command is a dummy command to force a new connection after the above restart    
+        $action_commands += "$sql_cmd `"select newid()`" -ErrorAction SilentlyContinue"
+
     }
 
     Write-Host "`n`nThe following tasks will be done:`n"
