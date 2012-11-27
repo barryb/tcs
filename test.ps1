@@ -5,8 +5,6 @@ $scriptDir = Split-Path $scriptPath
 
 $cf = [xml](Get-Content "c:\wbt_setup\tcs\config.xml")
 
-write-host "PHP INstaller: $cf.config.phpInstallerName"
-
 Import-Module $scriptDir\TopClassTools
 
 
