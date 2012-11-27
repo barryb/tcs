@@ -4,7 +4,7 @@
         <sql_admin_name value = "sa" />
         <sql_admin_password value = "change_me" />
         <sql_server_name value = "MSSQLSERVER" />
-        <sql_use_windows_auth value = "true" />
+        <sql_use_windows_auth value = "True" />
 
         <setup_dir value ="C:\wbt_setup" />
 
