@@ -9,7 +9,7 @@
         <setup_dir value ="C:\wbt_setup" />
 
         <phpInstallerName value ="php-installer.msi"/>
-        <tc_installer_zip value = "tc9-installer.zip" />
+        <tc_installer_zip value = "tc9-distribution.zip" />
 
         <ask_permission value = "false" />
 </config>

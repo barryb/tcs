@@ -28,12 +28,13 @@ Install-TCphp -setup_dir $setup_dir -installerName $phpInstallerName
 
 
 # Configure SQL server to allow CLRs, which it doesn't by default
+# and enable 'sa' account - bad practice. We should fix our install scripts
 Enable-TCclr `
     -use_windows_auth $sql_use_windows_auth `
     -admin_name $sql_admin_name `
     -admin_password $sql_admin_password `
     -instance_name $sql_server_name `
-    -ask_permission $ask_permission
+    -ask_permission $ask_permission `
     -enable_mixed_mode $true `
     -enable_sa_password $true `
     -reset_sa_password $true
@@ -46,5 +47,5 @@ $tc_dist_path = "$setup_dir\$tc_base_name"
 
 Start-Process `
     -file "C:\Program Files (x86)\Git\bin\unzip.exe" `
-    -arg "$setup_dir\$tc_installer_zip -d $tc_dist_path" `
+    -arg "-q $setup_dir\$tc_installer_zip -d $tc_dist_path" `
     -passthru | Wait-Process
