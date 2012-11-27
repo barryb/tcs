@@ -73,12 +73,12 @@ function Enable-TCclr {
     # be fixed to either work with Windows authentication or any specified login
 
     if ( $enable_mixed_mode -eq $true ) {
-        $iName = get-itemproperty ‘HKLM:\Software\microsoft\Microsoft SQL Server\Instance Names\SQL’ `
+        $iName = get-itemproperty 'HKLM:\Software\microsoft\Microsoft SQL Server\Instance Names\SQL' `
         -name $instance_name
 
         if ($?) {
             $i = $iName.MSSQLSERVER
-            set-itemproperty “HKLM:\Software\microsoft\Microsoft SQL Server\$i\MSSQLServer” `
+            set-itemproperty "HKLM:\Software\microsoft\Microsoft SQL Server\$i\MSSQLServer" `
                 -name LoginMode -value 2 -type dword
         }
     }
