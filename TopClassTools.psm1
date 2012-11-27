@@ -36,9 +36,12 @@ function Enable-TCclr {
     param (
             [boolean] $use_windows_auth = $true,
             [string] $admin_name = 'sa',
-            [string] $admin_password = 'needpassword',
+            [string] $admin_password = 'Vbadpass1',
             [string] $instance_name = 'MSSQLSERVER',
-            [boolean] $ask_permission = $false
+            [boolean] $ask_permission = $false,
+            [boolean] $enable_mixed_mode = $false,
+            [boolean] $enable_sa_account = $false,
+            [boolean] $reset_sa_password = $false
 
         )
 
@@ -60,6 +63,40 @@ function Enable-TCclr {
     }
 
     $sql_cmd = "Invoke-Sqlcmd -Database master $sql_creds -Query "
+
+    # Horrible hacks to enable mixed authentication enable_mixed_mode
+    # and enable the sa account
+
+    # Our install scripts stupidly require an 'sa' account.
+    # This account is not enabled by default and is considered a security risk
+    # It is bap policy for us to require this - the install scripts should
+    # be fixed to either work with Windows authentication or any specified login
+
+    if ( $enable_mixed_mode -eq $true ) {
+        $iName = get-itemproperty ‘HKLM:\Software\microsoft\Microsoft SQL Server\Instance Names\SQL’ `
+        -name $instance_name
+
+        if ($?) {
+            $i = $iName.MSSQLSERVER
+            set-itemproperty “HKLM:\Software\microsoft\Microsoft SQL Server\$i\MSSQLServer” `
+                -name LoginMode -value 2 -type dword
+        }
+    }
+
+    if ( $enable_sa_account -eq $true ) {
+        
+        $command = "alter login [sa] enable"
+        $result = Invoke-Expression "$sql_cmd `"$command`""
+
+    }
+
+    if ( $reset_sa_password -eq $true ) {
+        
+        $command = "alter login [sa] with password = '$admin_password'"
+        $result = Invoke-Expression "$sql_cmd `"$command`""
+
+    }
+
 
     # Enable Showing advanced options
     $command = "exec sp_configure 'show advanced options',1; reconfigure"

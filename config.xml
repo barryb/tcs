@@ -2,7 +2,7 @@
 <config>
 
         <sql_admin_name value = "sa" />
-        <sql_admin_password value = "change_me" />
+        <sql_admin_password value = "Vbadpass1" />
         <sql_server_name value = "MSSQLSERVER" />
         <sql_use_windows_auth value = "True" />
 

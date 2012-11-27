@@ -34,6 +34,9 @@ Enable-TCclr `
     -admin_password $sql_admin_password `
     -instance_name $sql_server_name `
     -ask_permission $ask_permission
+    -enable_mixed_mode $true `
+    -enable_sa_password $true `
+    -reset_sa_password $true
 
 
 # Unzip makes use of tools installed by git, there is no unzip command in base Windows
@@ -42,6 +45,6 @@ $tc_dist_path = "$setup_dir\$tc_base_name"
 #Invoke-Expression "C:\Program Files (x86)\Git\bin\unzip.exe -q $setup_dir\$tc_installer_zip -d $tc_dist_path"
 
 Start-Process `
-    -file "C:\Program Files (x86)\Git\bin\unzip.exe"`
-    -arg "-q $setup_dir\$tc_installer_zip -d $tc_dist_path" `
+    -file "C:\Program Files (x86)\Git\bin\unzip.exe" `
+    -arg "$setup_dir\$tc_installer_zip -d $tc_dist_path" `
     -passthru | Wait-Process
