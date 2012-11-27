@@ -15,10 +15,8 @@ $tc_installer_zip = $cf.config.tc_installer_zip.value
 
 $sql_admin_password = $cf.config.sql_admin_password.value
 
-$sql_auth = $cf.config.sql_use_windows_auth.value
-
 $ask_permission = [Boolean]::Parse($cf.config.ask_permission.value)
-$sql_use_windows_auth = [Boolean]::Parse($cf.config.sql_use_windows_auth)
+$sql_use_windows_auth = [Boolean]::Parse($cf.config.sql_use_windows_auth.value)
 
 Import-Module $scriptDir\TopClassTools
 
