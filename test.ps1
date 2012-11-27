@@ -26,3 +26,10 @@ Enable-TCclr `
     -admin_password $sql_admin_password `
     -instance_name $sql_server_name `
     -ask_permission $ask_permission
+
+
+
+# Tweek explorer settings
+$key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+Set-ItemProperty $key Hidden 1
+Set-ItemProperty $key HideFileExt 0
