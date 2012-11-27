@@ -16,17 +16,11 @@ function Install-TCiis {
 function Install-TCphp {
     param (
 
-        [string] $setup_dir = $cf.config.setup_dir.value,
-        [string] $phpInstallerName = $cf.config.phpInstallerName
+        [string] $setup_dir,
+        [string] $phpInstallerName
         )
 
     [string] $args = "/q ADDLOCAL=iis4FastCGI /log $setup_dir\php-install.log"
-
-    [string] $test = $cf.config.setup_dir.value
-    Write-host "Test: $test"
-
-    Write-host "File: $setup_dir\$phpInstallerName"
-    Write-host "args: $args"
 
      Start-Process `
         -file "$setup_dir\$phpInstallerName" `
