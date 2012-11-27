@@ -3,10 +3,10 @@
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptDir = Split-Path $scriptPath
 
-$cf = [xml](Get-Content "c:\wbt_setup\tcs\config.xml")
+$cf = [xml](Get-Content "$scriptDir\config.xml")
 
 Import-Module $scriptDir\TopClassTools
 
 
 Install-TCiis
-Install-TCphp
+Install-TCphp -setup_dir $cf.config.setup_dir -phpInstallerName $cf.config.phpInstallerName
