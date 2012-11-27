@@ -10,10 +10,13 @@ $phpInstallerName = $cf.config.phpInstallerName.value
 $sql_admin_name = $cf.config.sql_admin_name.value
 $sql_admin_password = $cf.config.sql_admin_password.value
 $sql_server_name = $cf.config.sql_server_name.value
-$sql_use_windows_auth = $cf.config.sql_use_windows_auth.value
+
 $tc_installer_zip = $cf.config.tc_installer_zip.value
-$ask_permission = $cf.config.ask_permission.value
+
 $sql_admin_password = $cf.config.sql_admin_password.value
+
+[Boolean] $ask_permission = [System.Convert]::ToBoolean($cf.config.ask_permission.value)
+[Boolean] $sql_use_windows_auth = [System.Convert]::ToBoolean($cf.config.sql_use_windows_auth.value)
 
 Import-Module $scriptDir\TopClassTools
 
