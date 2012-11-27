@@ -21,7 +21,7 @@ $sql_use_windows_auth = [Boolean]::Parse($cf.config.sql_use_windows_auth.value)
 Import-Module $scriptDir\TopClassTools
 
 
-if ( $sql_user_windows_auth -eq $true ) {
+if ( $sql_use_windows_auth -eq $true ) {
 
     write-host "Using Windows AUTH"
 } else {
