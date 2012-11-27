@@ -51,3 +51,10 @@ Start-Process `
     -file "C:\Program Files (x86)\Git\bin\unzip.exe" `
     -arg "-q $setup_dir\$tc_installer_zip -d $tc_dist_path" `
     -passthru | Wait-Process
+
+
+# SQL Config
+$install_dir = "$setup_dir\install"
+mkdir $install_dir
+Copy-Item "$tc_base_name\MSSQL" $install_dir -recurse
+
