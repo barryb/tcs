@@ -40,11 +40,9 @@ $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
 Set-ItemProperty $key Hidden 1
 Set-ItemProperty $key HideFileExt 0
 
+# Unzip makes use of tools installed by git, there is no unzip command in base Windows
 
-# Unzip TopClass Zip
-cd $setup_dir
-$shell_app=new-object -com shell.application
-$zip_file = $shell_app.namespace((Get-Location).Path + "\$tc_installer_zip")
-$destination = $shell_app.namespace((Get-Location).Path)
-$destination.Copyhere($zip_file.items())
+$tc_base_name = (Split-Path $tc_installer_zip -leaf).ToString().Replace(".zip", "")
+$tc_dist_path = "$setup_dir\$tc_base_name"
+Invoke-Expression "unzip -q $setup_dir\$tc_installer_zip -d $tc_dist_path"
 
