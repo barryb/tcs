@@ -22,6 +22,8 @@ Import-Module $scriptDir\TopClassTools
 
 Write-host "TC: $tc_installer_zip"
 
+write-host $sql_user_windows_auth
+
 if ( $sql_user_windows_auth -eq $true ) {
 
     write-host "Using Windows AUTH"
