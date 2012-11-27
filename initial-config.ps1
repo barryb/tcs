@@ -38,7 +38,7 @@ Enable-TCclr `
     -instance_name $sql_server_name `
     -ask_permission $ask_permission `
     -enable_mixed_mode $true `
-    -enable_sa_password $true `
+    -enable_sa_account $true `
     -reset_sa_password $true
 
 
