@@ -93,7 +93,7 @@ function Enable-TCclr {
 
         Write-Host "Enabling SA account"
         
-        $command = "alter login [sa] enable; go"
+        $command = "alter login [sa] enable"
         $result = Invoke-Expression "$sql_cmd `"$command`""
 
     }
@@ -102,7 +102,7 @@ function Enable-TCclr {
 
         Write-Host "Resetting SA password"
         
-        $command = "alter login [sa] with password = '$admin_password'; go"
+        $command = "alter login [sa] with password = '$admin_password'"
         $result = Invoke-Expression "$sql_cmd `"$command`""
 
     }
