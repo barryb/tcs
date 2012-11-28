@@ -179,17 +179,22 @@ Set-WebConfigurationProperty -pspath 'IIS:Sites\Default Web Site\jakarta' `
 
 Write-Host "Adding Jakarta Registry entries"
 
+$reg_base = "HKLM:\Software\Apache Software Foundation"
+New-Item -Path "$reg_base"
+$reg_base = "HKLM:\Software\Apache Software Foundation\Jakarta Isapi Redirector"
+New-Item -Path "$reg_base"
 $reg_base = "HKLM:\Software\Apache Software Foundation\Jakarta Isapi Redirector\1.0"
+New-Item -Path "$reg_base"
 
-New-Item -Path "$reg_base\extension_uri" -Value "/jakarta/isapi_redirect.dll"
-New-Item -Path "$reg_base\worker_file" -Value "$tc_server_path\tcc\iis\conf\workers.properties"
-New-Item -Path "$reg_base\worker_mount_file" -Value "$tc_server_path\tcc\iis\conf\uriworkermap.properties"
-New-Item -Path "$reg_base\log_file" -Value "$tc_server_path\tcc\tomcat\logs\isapi_redirect.log"
-New-Item -Path "$reg_base\log_level" -Value "info"
+New-ItemProperty -Path "$reg_base" -Name "extension_uri" -Value "/jakarta/isapi_redirect.dll"
+New-ItemProperty -Path "$reg_base" -Name "worker_file" -Value "$tc_server_path\tcc\iis\conf\workers.properties"
+New-ItemProperty -Path "$reg_base" -Name "worker_mount_file" -Value "$tc_server_path\tcc\iis\conf\uriworkermap.properties"
+New-ItemProperty -Path "$reg_base" -Name "log_file" -Value "$tc_server_path\tcc\tomcat\logs\isapi_redirect.log"
+New-ItemProperty -Path "$reg_base" -Name "log_level" -Value "info"
 
 $app_cmd = "c:\windows\system32\inetsrv\appcmd.exe"
 
-Invoke-Expression "$app_cmd set config /section:isapiFilters /+[name='jakarta',path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',preCondition='bitness64']"
+Invoke-Expression "$app_cmd set config /section:isapiFilters /+`"[name='jakarta',path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',preCondition='bitness64']`""
 
 Invoke-Expression "$app_cmd set config -section:system.webServer/security/isapiCgiRestriction /+`"[path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',allowed='True',description='TC Redirector']`" /commit:apphost"
 
