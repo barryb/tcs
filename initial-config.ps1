@@ -17,6 +17,7 @@ $tc_user = $cf.config.tc_user.value
 $tc_pass = $cf.config.tc_pass.value
 $tc_db_path = $cf.config.tc_db_path.value
 $tc_db_server = $cf.config.tc_db_server.value
+$tc_server_path = $cf.config.tc_server_path.value
 $ask_permission = [Boolean]::Parse($cf.config.ask_permission.value)
 $sql_use_windows_auth = [Boolean]::Parse($cf.config.sql_use_windows_auth.value)
 
@@ -64,7 +65,7 @@ Copy-Item "$tc_base_name\MSSQL" $install_dir -recurse
 
 # Edit tc_setup.command
 
-$file = "$install_dir\MSSQL\tc_setup.cmd"
+$file = "$install_dir\MSSQL\tc_setenv.cmd"
 $orig = "$file.orig"
 Rename-Item $file $orig
 
@@ -73,10 +74,22 @@ Get-Content $orig |
 
         $_ -replace 'set MS_SRV_NAME=%COMPUTERNAME%', "set MS_SRV_NAME=$tc_db_server" `
         -replace 'set TC_USER=tc_user92', "set TC_USER=$tc_user" `
-        -replace 'set TC_DATA=C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\Data', "set TC_DATA=$tc_db_path"
+        -replace 'set TC_DATA=C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\Data', "set TC_DATA=$tc_db_path"
     } | Set-Content $file
 
 New-Item -type directory -path $tc_db_path -force
+
+$env:SILENT="true"
+cd "$install_dir\MSSQL"
+Invoke-Expression "tc_setup_db.cmd $tc_pass $sql_admin_password"
+Invoke-Expression "tc_db_schema.cmd $tc_pass install"
+
+
+# Copy TC Server files into place
+
+Copy-Item "$tc_dist_path\TopClass9" $tc_server_path -recurse
+
+
 
 
 
