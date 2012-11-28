@@ -18,4 +18,5 @@
         <tc_db_path value = "C:\tc_data" />
         <tc_db_server value = "localhost" />
         <tc_server_path value = "C:\TopClass9" />
+        <iis_user value = "IUSR" />    
 </config>

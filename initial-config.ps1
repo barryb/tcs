@@ -13,6 +13,7 @@ $sql_admin_password = $cf.config.sql_admin_password.value
 $sql_server_name = $cf.config.sql_server_name.value
 $tc_installer_zip = $cf.config.tc_installer_zip.value
 $sql_admin_password = $cf.config.sql_admin_password.value
+$iis_user = $cf.config.iis_user.value
 $tc_user = $cf.config.tc_user.value
 $tc_pass = $cf.config.tc_pass.value
 $tc_db_path = $cf.config.tc_db_path.value
@@ -81,15 +82,45 @@ New-Item -type directory -path $tc_db_path -force
 
 $env:SILENT="true"
 cd "$install_dir\MSSQL"
-Invoke-Expression "tc_setup_db.cmd $tc_pass $sql_admin_password"
-Invoke-Expression "tc_db_schema.cmd $tc_pass install"
+Invoke-Expression ".\tc_setup_db.cmd $tc_pass $sql_admin_password"
+Invoke-Expression ".\tc_db_schema.cmd $tc_pass install"
 
 
 # Copy TC Server files into place
 
 Copy-Item "$tc_dist_path\TopClass9" $tc_server_path -recurse
 
+Copy-Item "$tc_server_path\topclass.war" "$tc_server_path\tcc\tomcat\webapps"
+
+# Edit server.xml file
+
+$file = "$tc_server_path\tcc\tomcat\conf\server.xml"
+$orig = "$file.orig"
+Rename-Item $file $orig
+
+Get-Content $orig |
+    ForEach-Object {
+
+        $_ -replace 'Connector port="8009" protocol="AJP/1.3" redirectPort="8443"', `
+            "Connector port=`"8009`" protocol=`"AJP/1.3`" redirectPort=`"8443`" URIEncoding=`"UTF8`""
+ 
+    } | Set-Content $file
 
 
+# Set Permissions on TopClass directory
+$acl = Get-Acl $tc_server_path
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($iis_user, "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow")
+$acl.AddAccessRule($rule)
+Set-Acl -aclobject $acl $tc_server_path
 
+
+# Create Tomcat Service
+
+cd "$tc_server_path\tcc\tomcat\bin"
+$env:JAVA_HOME="$tc_server_path\tcc\jdk"
+Invoke-Expression ".\service install tomcat6"
+New-Item -type directory -path "$tc_server_path\tcc\tomcat\conf\topclass" -force
+
+
+Invoke-Expression "net start tomcat6"
 
