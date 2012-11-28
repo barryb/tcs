@@ -130,9 +130,11 @@ Invoke-Expression "net start tomcat6"
 Write-Host "Waiting two minutes for the WAR to deploy"
 Start-Sleep -seconds 120
 
+Write-Host "Stopping Tomcat"
+
 Invoke-Expression "net stop tomcat6"
 
-Write-Host "Configure DB properties"
+Write-Host "Configure Hibernate properties"
 
 $tc_conf_dir = "$tc_server_path\tcc\tomcat\conf\topclass"
 $tc_class_dir = "$tc_server_path\tcc\tomcat\webapps\topclass\WEB-INF\classes"
@@ -149,8 +151,8 @@ Rename-Item $file $orig
 Get-Content $orig |
     ForEach-Object {
 
-        $_ -replace 'hibernate.connection.username=tcuser', "hibernate.connection.username=$tc_user" `
-        -replace 'hibernate.connection.password=tcuser', "hibernate.connection.password=$tc_pass" `
+        $_ -replace 'hibernate.connection.username=tcUser', "hibernate.connection.username=$tc_user" `
+        -replace 'hibernate.connection.password=tcPass', "hibernate.connection.password=$tc_pass" `
         -replace 'hibernate.connection.isolation=1', "hibernate.connection.isolation=2" `
         -replace 'hibernate.connection.driver_class=oracle', "#hibernate.connection.driver_class=oracle" `
         -replace 'hibernate.connection.url=jdbc:oracle', "#hibernate.connection.url=jdbc:oracle" `
@@ -160,5 +162,36 @@ Get-Content $orig |
         -replace '#hibernate.dialect=com.wbtsystems.topclass.util.UnicodeSql', "hibernate.dialect=com.wbtsystems.topclass.util.UnicodeSql" `
  
     } | Set-Content $file
+
+Write-Host "Starting Tomcat"
+Invoke-Expression "net start tomcat6"
+
+# Now to configure IIS
+Write-Host "Now going to configure IIS"
+
+Import-Module WebAdministration
+
+New-WebApplication -name jakarta -Site "Default Web Site" -PhysicalPath "$tc_server_path\tcc\iis\dll"
+Set-WebConfigurationProperty -pspath 'IIS:Sites\Default Web Site\jakarta' `
+    -filter 'system.webserver/handlers' -name accesspolicy -value "Read,Execute,Script"
+
+# Add jakarta reg entries
+
+Write-Host "Adding Jakarta Registry entries"
+
+$reg_base = "HKLM:\Software\Apache Software Foundation\Jakarta Isapi Redirector\1.0"
+
+New-Item -Path "$reg_base\extension_uri" -Value "/jakarta/isapi_redirect.dll"
+New-Item -Path "$reg_base\worker_file" -Value "$tc_server_path\tcc\iis\conf\workers.properties"
+New-Item -Path "$reg_base\worker_mount_file" -Value "$tc_server_path\tcc\iis\conf\uriworkermap.properties"
+New-Item -Path "$reg_base\log_file" -Value "$tc_server_path\tcc\tomcat\logs\isapi_redirect.log"
+New-Item -Path "$reg_base\log_level" -Value "info"
+
+$app_cmd = "c:\windows\system32\inetsrv\appcmd.exe"
+
+Invoke-Expression "$app_cmd set config /section:isapiFilters /+[name='jakarta',path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',preCondition='bitness64']"
+
+Invoke-Expression "$app_cmd set config -section:system.webServer/security/isapiCgiRestriction /+`"[path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',allowed='True',description='TC Redirector']`" /commit:apphost"
+
 
 
