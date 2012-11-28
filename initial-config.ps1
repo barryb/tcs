@@ -106,6 +106,7 @@ Get-Content $orig |
  
     } | Set-Content $file
 
+Write-Host "Setting permissions on $tc_server_path"
 
 # Set Permissions on TopClass directory
 $acl = Get-Acl $tc_server_path
@@ -116,6 +117,8 @@ Set-Acl -aclobject $acl $tc_server_path
 
 # Create Tomcat Service
 
+Write-Host "Creating TomCat Service"
+
 cd "$tc_server_path\tcc\tomcat\bin"
 $env:JAVA_HOME="$tc_server_path\tcc\jdk"
 Invoke-Expression ".\service install tomcat6"
@@ -123,4 +126,39 @@ New-Item -type directory -path "$tc_server_path\tcc\tomcat\conf\topclass" -force
 
 
 Invoke-Expression "net start tomcat6"
+
+Write-Host "Waiting two minutes for the WAR to deploy"
+Start-Sleep -seconds 120
+
+Invoke-Expression "net stop tomcat6"
+
+Write-Host "Configure DB properties"
+
+$tc_conf_dir = "$tc_server_path\tcc\tomcat\conf\topclass"
+$tc_class_dir = "$tc_server_path\tcc\tomcat\webapps\topclass\WEB-INF\classes"
+Copy-Item "$tc_class_dir\hibernate.properties" $tc_conf_dir
+Copy-Item "$tc_class_dir\defaults.xml" $tc_conf_dir
+
+
+# Edit hibernate.properties file
+
+$file = "$tc_conf_dir\hibernate.properties"
+$orig = "$file.orig"
+Rename-Item $file $orig
+
+Get-Content $orig |
+    ForEach-Object {
+
+        $_ -replace 'hibernate.connection.username=tcuser', "hibernate.connection.username=$tc_user" `
+        -replace 'hibernate.connection.password=tcuser', "hibernate.connection.password=$tc_pass" `
+        -replace 'hibernate.connection.isolation=1', "hibernate.connection.isolation=2" `
+        -replace 'hibernate.connection.driver_class=oracle', "#hibernate.connection.driver_class=oracle" `
+        -replace 'hibernate.connection.url=jdbc:oracle', "#hibernate.connection.url=jdbc:oracle" `
+        -replace 'hibernate.dialect=com.wbtsystems.topclass.util.Oracle', "#hibernate.dialect=com.wbtsystems.topclass.util.Oracle" `
+        -replace '#hibernate.connection.driver_class=com.microsoft', "hibernate.connection.driver_class=com.microsoft" `
+        -replace '#hibernate.connection.url=jdbc:sqlserver://@sqlhost@', "hibernate.connection.url=jdbc:sqlserver://$tc_db_server" `
+        -replace '#hibernate.dialect=com.wbtsystems.topclass.util.UnicodeSql', "hibernate.dialect=com.wbtsystems.topclass.util.UnicodeSql" `
+ 
+    } | Set-Content $file
+
 
