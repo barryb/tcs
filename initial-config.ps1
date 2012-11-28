@@ -214,14 +214,14 @@ $file = "$tc_server_path\tcc\tomcat\webapps\topclass\tinymce\plugins\filemanager
 $orig = "$file.orig"
 Rename-Item $file $orig
 
+$fwd_path = $iis_topclass_root -replace("\\","/")
+
 Get-Content $orig |
     ForEach-Object {
 
-        $_ -replace "mcFileManagerConfig['preview.wwwroot'] = '';" `
-            , "mcFileManagerConfig['preview.wwwroot'] = '$iis_topclass_root';" `
+        $_ -replace "preview.wwwroot'] = ''" "preview.wwwroot'] = '$fwd_path'" `
          -replace "{proto}://{host}/" , "{proto}://{host}/topclass/" `
-         -replace "['filesystem.rootpath'] = '`.`.`/`.`.`/`.`.`/';" `
-            , "['filesystem.rootpath'] = '$iis_topclass_root';"
+         -replace "rootpath'] = '`.`.`/`.`.`/`.`.`/';", "rootpath'] = '$fwd_path';"
        
     } | Set-Content $file
 
