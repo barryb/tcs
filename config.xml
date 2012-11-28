@@ -15,4 +15,6 @@
 
         <tc_user value = "tcuser" />
         <tc_pass value = "Jjasj6435kk" />
+        <tc_db_path value = "C:\tc_data" />
+        <tc_db_server value = "localhost" />
 </config>

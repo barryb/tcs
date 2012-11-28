@@ -15,8 +15,12 @@ $tc_installer_zip = $cf.config.tc_installer_zip.value
 $sql_admin_password = $cf.config.sql_admin_password.value
 $tc_user = $cf.config.tc_user.value
 $tc_pass = $cf.config.tc_pass.value
+$tc_db_path = $cf.config.tc_db_path.value
+$tc_db_server = $cf.config.tc_db_server.value
 $ask_permission = [Boolean]::Parse($cf.config.ask_permission.value)
 $sql_use_windows_auth = [Boolean]::Parse($cf.config.sql_use_windows_auth.value)
+
+
 
 
 # The messy bits are kept in the TopClassTools Module
@@ -57,4 +61,22 @@ Start-Process `
 $install_dir = "$setup_dir\install"
 mkdir $install_dir
 Copy-Item "$tc_base_name\MSSQL" $install_dir -recurse
+
+# Edit tc_setup.command
+
+$file = "$install_dir\MSSQL\tc_setup.cmd"
+$orig = "$file.orig"
+Rename-Item $file $orig
+
+Get-Content $orig |
+    ForEach-Object {
+
+        $_ -replace 'set MS_SRV_NAME=%COMPUTERNAME%', "set MS_SRV_NAME=$tc_db_server" `
+        -replace 'set TC_USER=tc_user92', "set TC_USER=$tc_user" `
+        -replace 'set TC_DATA=C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\Data', "set TC_DATA=$tc_db_path"
+    } | Set-Content $file
+
+New-Item -type directory -path $tc_db_path -force
+
+
 
