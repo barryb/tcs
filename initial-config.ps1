@@ -17,6 +17,7 @@ $iis_user = $cf.config.iis_user.value
 $tc_user = $cf.config.tc_user.value
 $tc_pass = $cf.config.tc_pass.value
 $tc_db_path = $cf.config.tc_db_path.value
+$iis_topclass_root = $cf.config.iis_topclass_root.value
 $tc_db_server = $cf.config.tc_db_server.value
 $tc_server_path = $cf.config.tc_server_path.value
 $ask_permission = [Boolean]::Parse($cf.config.ask_permission.value)
@@ -197,6 +198,32 @@ $app_cmd = "c:\windows\system32\inetsrv\appcmd.exe"
 Invoke-Expression "$app_cmd set config /section:isapiFilters /+`"[name='jakarta',path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',preCondition='bitness64']`""
 
 Invoke-Expression "$app_cmd set config -section:system.webServer/security/isapiCgiRestriction /+`"[path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',allowed='True',description='TC Redirector']`" /commit:apphost"
+
+New-Item -type directory -path "$iis_topclass_root" -force
+New-Item -type directory -path "$iis_topclass_root\media" -force
+
+# Set Permissions on TopClass directory
+$acl = Get-Acl $iis_topclass_root
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($iis_user, "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow")
+$acl.AddAccessRule($rule)
+Set-Acl -aclobject $acl $iis_topclass_root
+
+# Edit PHP File Manager config file
+
+$file = "$tc_server_path\tcc\tomcat\webapps\topclass\tinymce\plugins\filemanager\config.php"
+$orig = "$file.orig"
+Rename-Item $file $orig
+
+Get-Content $orig |
+    ForEach-Object {
+
+        $_ -replace "mcFileManagerConfig['preview.wwwroot'] = '';" `
+            , "mcFileManagerConfig['preview.wwwroot'] = '$iis_topclass_root';" `
+         -replace "{proto}://{host}/" , "{proto}://{host}/topclass/" `
+         -replace "['filesystem.rootpath'] = '`.`.`/`.`.`/`.`.`/';" `
+            , "['filesystem.rootpath'] = '$iis_topclass_root';"
+       
+    } | Set-Content $file
 
 
 
