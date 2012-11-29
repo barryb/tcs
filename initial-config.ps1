@@ -63,7 +63,7 @@ Start-Process `
 # SQL Config
 $install_dir = "$setup_dir\install"
 mkdir $install_dir
-Copy-Item "$tc_base_name\MSSQL" $install_dir -recurse
+Copy-Item "$tc_dist_path\MSSQL" $install_dir -recurse
 
 # Edit tc_setup.command
 
