@@ -128,7 +128,7 @@ New-Item -type directory -path "$tc_server_path\tcc\tomcat\conf\topclass" -force
 
 Invoke-Expression "net start tomcat6"
 
-Write-Host "Waiting two minutes for the WAR to deploy"
+Write-Host "Waiting four minutes for the WAR to deploy"
 Start-Sleep -seconds 240
 
 Write-Host "Stopping Tomcat"
@@ -173,6 +173,10 @@ Write-Host "Now going to configure IIS"
 Import-Module WebAdministration
 
 New-WebApplication -name jakarta -Site "Default Web Site" -PhysicalPath "$tc_server_path\tcc\iis\dll"
+
+$app_cmd = "c:\windows\system32\inetsrv\appcmd.exe"
+Invoke-Expression "$app_cmd unlock config 'Default Web Site' /section:system.webserver/handlers /commit:apphost"
+
 Set-WebConfigurationProperty -pspath 'IIS:Sites\Default Web Site\jakarta' `
     -filter 'system.webserver/handlers' -name accesspolicy -value "Read,Execute,Script"
 
@@ -193,8 +197,6 @@ New-ItemProperty -Path "$reg_base" -Name "worker_mount_file" -Value "$tc_server_
 New-ItemProperty -Path "$reg_base" -Name "log_file" -Value "$tc_server_path\tcc\tomcat\logs\isapi_redirect.log"
 New-ItemProperty -Path "$reg_base" -Name "log_level" -Value "info"
 
-$app_cmd = "c:\windows\system32\inetsrv\appcmd.exe"
-
 Invoke-Expression "$app_cmd set config /section:isapiFilters /+`"[name='jakarta',path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',preCondition='bitness64']`""
 
 Invoke-Expression "$app_cmd set config -section:system.webServer/security/isapiCgiRestriction /+`"[path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',allowed='True',description='TC Redirector']`" /commit:apphost"
@@ -209,6 +211,8 @@ $acl.AddAccessRule($rule)
 Set-Acl -aclobject $acl $iis_topclass_root
 
 # Edit PHP File Manager config file
+
+Write-Host "Configure PHP File Manager"
 
 $file = "$tc_server_path\tcc\tomcat\webapps\topclass\tinymce\plugins\filemanager\config.php"
 $orig = "$file.orig"
@@ -225,5 +229,5 @@ Get-Content $orig |
        
     } | Set-Content $file
 
-
+Write-Host "Install Complete"
 
