@@ -219,7 +219,7 @@ $fwd_path = $iis_topclass_root -replace("\\","/")
 Get-Content $orig |
     ForEach-Object {
 
-        $_ -replace "preview.wwwroot'] = ''" "preview.wwwroot'] = '$fwd_path'" `
+        $_ -replace "preview.wwwroot'] = ''", "preview.wwwroot'] = '$fwd_path'" `
          -replace "{proto}://{host}/" , "{proto}://{host}/topclass/" `
          -replace "rootpath'] = '`.`.`/`.`.`/`.`.`/';", "rootpath'] = '$fwd_path';"
        
