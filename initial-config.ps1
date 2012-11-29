@@ -129,7 +129,7 @@ New-Item -type directory -path "$tc_server_path\tcc\tomcat\conf\topclass" -force
 Invoke-Expression "net start tomcat6"
 
 Write-Host "Waiting two minutes for the WAR to deploy"
-Start-Sleep -seconds 120
+Start-Sleep -seconds 240
 
 Write-Host "Stopping Tomcat"
 
