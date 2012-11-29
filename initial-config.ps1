@@ -123,6 +123,7 @@ Write-Host "Creating TomCat Service"
 cd "$tc_server_path\tcc\tomcat\bin"
 $env:JAVA_HOME="$tc_server_path\tcc\jdk"
 Invoke-Expression ".\service install tomcat6"
+Set-Service -Name 'tomcat6' -StartupType Automatic
 New-Item -type directory -path "$tc_server_path\tcc\tomcat\conf\topclass" -force
 
 
