@@ -33,7 +33,7 @@ Import-Module $scriptDir\TopClassTools
 Install-TCiis
 
 # Install PHP with fastcgi module for IIS
-Install-TCphp -setup_dir $setup_dir -installerName $phpInstallerName
+Install-TCphp `    -setup_dir $setup_dir `    -installerName $phpInstallerName
 
 
 # Configure SQL server to allow CLRs, which it doesn't by default
@@ -52,7 +52,6 @@ Enable-TCclr `
 # Unzip makes use of tools installed by git, there is no unzip command in base Windows
 $tc_base_name = (Split-Path $tc_installer_zip -leaf).ToString().Replace(".zip", "")
 $tc_dist_path = "$setup_dir\$tc_base_name"
-#Invoke-Expression "C:\Program Files (x86)\Git\bin\unzip.exe -q $setup_dir\$tc_installer_zip -d $tc_dist_path"
 
 Start-Process `
     -file "C:\Program Files (x86)\Git\bin\unzip.exe" `
