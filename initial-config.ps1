@@ -241,7 +241,8 @@ $file = "$tc_server_path\tcc\tomcat\webapps\topclass\tinymce\plugins\filemanager
 $orig = "$file.orig"
 Rename-Item $file $orig
 
-$fwd_path = $iis_topclass_root -replace("\\","/")
+#$fwd_path = $iis_topclass_root -replace("\\","/")
+$fwd_path = $tc_media_dir_location -replace("\\","/")
 
 Get-Content $orig |
     ForEach-Object {
