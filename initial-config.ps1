@@ -14,6 +14,7 @@ $sql_server_name = $cf.config.sql_server_name.value
 $tc_installer_zip = $cf.config.tc_installer_zip.value
 $sql_admin_password = $cf.config.sql_admin_password.value
 $iis_user = $cf.config.iis_user.value
+$iis_maxContentLength = $cf.config.iis_maxContentLength.value
 $tc_user = $cf.config.tc_user.value
 $tc_pass = $cf.config.tc_pass.value
 $tc_db_path = $cf.config.tc_db_path.value
@@ -197,6 +198,9 @@ New-ItemProperty -Path "$reg_base" -Name "worker_file" -Value "$tc_server_path\t
 New-ItemProperty -Path "$reg_base" -Name "worker_mount_file" -Value "$tc_server_path\tcc\iis\conf\uriworkermap.properties"
 New-ItemProperty -Path "$reg_base" -Name "log_file" -Value "$tc_server_path\tcc\tomcat\logs\isapi_redirect.log"
 New-ItemProperty -Path "$reg_base" -Name "log_level" -Value "info"
+
+# Increase size of maxAllowedBytes in ContentFiltering
+Invoke-Expression "$app_cmd set config -section:requestFiltering -requestLimits.maxAllowedContentLength:$iis_maxContentLength"
 
 Invoke-Expression "$app_cmd set config /section:isapiFilters /+`"[name='jakarta',path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',preCondition='bitness64']`""
 

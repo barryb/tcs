@@ -19,5 +19,6 @@
         <tc_db_server value = "localhost" />
         <tc_server_path value = "C:\TopClass9" />
         <iis_user value = "IUSR" />
+        <iis_maxContentLength value = "200000000" />
         <iis_topclass_root value= "C:\inetpub\wwwroot\topclass" />
 </config>
