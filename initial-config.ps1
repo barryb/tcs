@@ -200,7 +200,7 @@ New-ItemProperty -Path "$reg_base" -Name "log_file" -Value "$tc_server_path\tcc\
 New-ItemProperty -Path "$reg_base" -Name "log_level" -Value "info"
 
 # Increase size of maxAllowedBytes in ContentFiltering
-Invoke-Expression "$app_cmd set config -section:requestFiltering -requestLimits.maxAllowedContentLength:$iis_maxContentLength"
+Invoke-Expression "$app_cmd set config /section:requestFiltering `"-requestLimits.maxAllowedContentLength:$iis_maxContentLength`""
 
 Invoke-Expression "$app_cmd set config /section:isapiFilters /+`"[name='jakarta',path='$tc_server_path\tcc\iis\dll\isapi_redirect.dll',preCondition='bitness64']`""
 
