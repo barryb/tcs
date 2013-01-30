@@ -18,7 +18,8 @@
         <tc_db_path value = "C:\tc_data" />
         <tc_db_server value = "localhost" />
         <tc_server_path value = "C:\TopClass9" />
+        <tc_media_dir_location value = "C:\inetpub\wwwroot\topclass" />
         <iis_user value = "IUSR" />
         <iis_maxContentLength value = "200000000" />
-        <iis_topclass_root value= "C:\inetpub\wwwroot\topclass" />
+        <iis_topclass_root value = "C:\inetpub\wwwroot\topclass" />
 </config>

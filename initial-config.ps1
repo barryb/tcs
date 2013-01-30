@@ -17,6 +17,7 @@ $iis_user = $cf.config.iis_user.value
 $iis_maxContentLength = $cf.config.iis_maxContentLength.value
 $tc_user = $cf.config.tc_user.value
 $tc_pass = $cf.config.tc_pass.value
+$tc_media_dir_location = $cf.config.tc_media_dir_location.value
 $tc_db_path = $cf.config.tc_db_path.value
 $iis_topclass_root = $cf.config.iis_topclass_root.value
 $tc_db_server = $cf.config.tc_db_server.value
@@ -208,6 +209,23 @@ Invoke-Expression "$app_cmd set config -section:system.webServer/security/isapiC
 
 New-Item -type directory -path "$iis_topclass_root" -force
 New-Item -type directory -path "$iis_topclass_root\media" -force
+
+# Only do the following if the media location is different
+
+if ( $tc_media_dir_location -ne $iis_topclass_root) {
+    New-Item -type directory -path "$tc_media_dir_location\media" -force
+    New-Item 'IIS:\Sites\Default Web Site\topclass\media' -type VirtualDirectory -physicalpath "$tc_media_dir_location\media"
+
+    # Set Permissions on TopClass directory
+    $acl = Get-Acl $tc_media_dir_location
+    $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($iis_user, "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow")
+    $acl.AddAccessRule($rule)
+    Set-Acl -aclobject $acl $tc_media_dir_location
+
+    $quoted_path = "$tc_media_dir_location\media" -replace("\\","\")
+
+    write-host "** NB: Fix Media Path in TopClass to: $quoted_path"
+}
 
 # Set Permissions on TopClass directory
 $acl = Get-Acl $iis_topclass_root
