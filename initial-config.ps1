@@ -24,6 +24,8 @@ $tc_db_server = $cf.config.tc_db_server.value
 $tc_server_path = $cf.config.tc_server_path.value
 $ask_permission = [Boolean]::Parse($cf.config.ask_permission.value)
 $sql_use_windows_auth = [Boolean]::Parse($cf.config.sql_use_windows_auth.value)
+$enable_clr = [Boolean]::Parse($cf.config.enable_clr.value)
+$setup_db = [Boolean]::Parse($cf.config.setup_db.value)
 
 
 
@@ -40,16 +42,18 @@ Install-TCphp -setup_dir $setup_dir -installerName $phpInstallerName
 
 # Configure SQL server to allow CLRs, which it doesn't by default
 # and enable 'sa' account - bad practice. We should fix our install scripts
-Enable-TCclr `
-    -use_windows_auth $sql_use_windows_auth `
-    -admin_name $sql_admin_name `
-    -admin_password $sql_admin_password `
-    -instance_name $sql_server_name `
-    -ask_permission $ask_permission `
-    -enable_mixed_mode $true `
-    -enable_sa_account $true `
-    -reset_sa_password $true
 
+if ( $enable_clr ) {
+    Enable-TCclr `
+        -use_windows_auth $sql_use_windows_auth `
+        -admin_name $sql_admin_name `
+        -admin_password $sql_admin_password `
+        -instance_name $sql_server_name `
+        -ask_permission $ask_permission `
+        -enable_mixed_mode $true `
+        -enable_sa_account $true `
+        -reset_sa_password $true
+}
 
 # Unzip makes use of tools installed by git, there is no unzip command in base Windows
 $tc_base_name = (Split-Path $tc_installer_zip -leaf).ToString().Replace(".zip", "")
@@ -81,13 +85,23 @@ Get-Content $orig |
         -replace 'set TC_DATA=C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\Data', "set TC_DATA=$tc_db_path"
     } | Set-Content $file
 
-New-Item -type directory -path $tc_db_path -force
 
-$env:SILENT="true"
-cd "$install_dir\MSSQL"
-Invoke-Expression ".\tc_setup_db.cmd $tc_pass $sql_admin_password"
-Invoke-Expression ".\tc_db_schema.cmd $tc_pass install"
+# Configure TC Database if required  
+# Create directory if DB is local and it doesn't exist  
 
+if ( $setup_db ) {
+
+
+    if ( ($tc_db_server -eq "localhost") -And -Not (Test-Path $tc_db_path) ) {
+
+        New-Item -type directory -path $tc_db_path -force
+    }
+
+    $env:SILENT="true"
+    cd "$install_dir\MSSQL"
+    Invoke-Expression ".\tc_setup_db.cmd $tc_pass $sql_admin_password"
+    Invoke-Expression ".\tc_db_schema.cmd $tc_pass install"
+}
 
 # Copy TC Server files into place
 

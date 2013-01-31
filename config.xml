@@ -13,6 +13,9 @@
 
         <ask_permission value = "false" />
 
+        <enable_clr value = "false" />
+        <setup_db value = "false" />
+
         <tc_user value = "tcuser" />
         <tc_pass value = "Jjasj6435kk" />
         <tc_db_path value = "C:\tc_data" />
