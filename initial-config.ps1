@@ -194,6 +194,8 @@ New-WebApplication -name jakarta -Site "Default Web Site" -PhysicalPath "$tc_ser
 $app_cmd = "c:\windows\system32\inetsrv\appcmd.exe"
 Invoke-Expression "$app_cmd unlock config 'Default Web Site' /section:system.webserver/handlers /commit:apphost"
 
+# Wait a bit, as occasionally get an error trying the following immediately after unlocking the config
+Start-Sleep -seconds 15
 Set-WebConfigurationProperty -pspath 'IIS:Sites\Default Web Site\jakarta' `
     -filter 'system.webserver/handlers' -name accesspolicy -value "Read,Execute,Script"
 
